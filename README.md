@@ -39,6 +39,34 @@ This project was developed and verified on **Ubuntu 26.10 (`x86_64`)**.
   - `lucide-react` (`^0.469.0`)
   - `vite` (`^6.0.5`), `@vitejs/plugin-react` (`^4.3.4`), `typescript` (`^5.7.2`)
 
+#### Installing Node.js (Ubuntu / Linux)
+Choose any one of the following methods to install Node.js 22 (tested with `v22.14.0`):
+
+- **Option A — `nvm` (recommended, no `sudo` required):**
+  ```bash
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+  source ~/.bashrc
+  nvm install 22.14.0
+  nvm use 22.14.0
+  node -v && npm -v
+  ```
+- **Option B — Official standalone binary in `~/.local/node` (no `sudo` required):**
+  ```bash
+  curl -fsSL https://nodejs.org/dist/v22.14.0/node-v22.14.0-linux-x64.tar.xz -o /tmp/node.tar.xz
+  mkdir -p ~/.local/node
+  tar -xJf /tmp/node.tar.xz -C ~/.local/node --strip-components=1
+  rm /tmp/node.tar.xz
+  echo 'export PATH="$HOME/.local/node/bin:$PATH"' >> ~/.bashrc
+  source ~/.bashrc
+  node -v && npm -v
+  ```
+- **Option C — System-wide on Ubuntu via NodeSource (`apt`):**
+  ```bash
+  curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+  sudo apt-get install -y nodejs
+  node -v && npm -v
+  ```
+
 ### Python & Ingestion Dependencies
 - **Python**: Tested on **Python `3.12.16`** inside `.venv` (managed via **`uv 0.13.9`**).
   - *Note*: Python **3.12** (or 3.11–3.13) is recommended so `igraph` and `leidenalg` install from prebuilt binary wheels. Newer interpreters (such as Ubuntu's system Python 3.14) may lack prebuilt wheels and attempt a C/C++ source build.
@@ -81,7 +109,22 @@ This project was developed and verified on **Ubuntu 26.10 (`x86_64`)**.
 
 ## Setup & Usage
 
-### 1. Set up Python environment & ingest data
+### Quick Install (Recommended)
+Run the included [install.sh](./install.sh) script to automatically set up everything (Node.js `v22.14.0` if missing, `uv`, Python `3.12` `.venv`, Python graph libraries, `npm` dependencies, and data verification) without requiring `sudo`:
+
+```bash
+chmod +x install.sh
+./install.sh
+
+# Useful optional flags:
+./install.sh --rebuild-data     # Re-run Stage 2 Leiden clustering & layout from local cache (~6s)
+./install.sh --refresh          # Fetch a fresh OpenAlex snapshot (requires OPENALEX_API_KEY in .env)
+./install.sh --with-playwright  # Also install Playwright for headless browser testing
+```
+
+### Manual Setup
+
+#### 1. Set up Python environment & ingest data
 ```bash
 # Install uv (optional, fast Python/venv manager)
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -99,7 +142,7 @@ echo "OPENALEX_API_KEY=your_api_key_here" > .env
 .venv/bin/python ingest/fetch_exac_network.py --refresh
 ```
 
-### 2. Install frontend dependencies & run the viewer
+#### 2. Install frontend dependencies & run the viewer
 ```bash
 # Install Node dependencies
 npm install
