@@ -1,0 +1,17 @@
+# Environment & secrets
+.env
+.env.*
+
+# Temporary partial ingestion downloads (keep ingest/cache/exac_raw.jsonl.gz tracked)
+ingest/cache/*.tmp
+
+# Python virtual environment & bytecode
+.venv/
+__pycache__/
+*.pyc
+
+# Node & build artifacts
+node_modules/
+dist/
+*.tsbuildinfo
+.DS_Store
